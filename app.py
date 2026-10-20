@@ -556,23 +556,24 @@ with tab2:
 
       counts.columns = ["項目", "count"]
 
-      fig_pie = px.pie(counts, names="項目", values="count", hole=0.4)
-
       if chart_target == "評価別":
+        fig_pie = px.pie(
+            counts,
+            names="項目",
+            values="count",
+            hole=0.4,
+            category_orders={"項目": ["1評価", "2評価", "3評価", "4評価", "5評価"]}
+        )
         fig_pie.update_traces(
             direction="clockwise",
             sort=False,
             hovertemplate="項目: %{label}<br>件数: %{value}<br>割合: %{percent}<extra></extra>",
         )
-        fig_pie.update_layout(
-            categoryorder="array",
-            categoryarray=["1評価", "2評価", "3評価", "4評価", "5評価"],
-        )
       else:
+        fig_pie = px.pie(counts, names="項目", values="count", hole=0.4)
         fig_pie.update_traces(direction="clockwise", sort=True)
 
       st.plotly_chart(fig_pie, use_container_width=True)
-    with col2:
       st.markdown("##### 📈 視聴数の推移")
       if "視聴日" in df.columns:
         df_temp = df.copy()
