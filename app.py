@@ -128,17 +128,12 @@ def filter_and_sort_data(df):
 
   with st.expander("検索・並び替えフィルター", expanded=False):
     if st.button("🔄 検索条件をリセット"):
-      for key in [
-          "search_keyword",
-          "filter_type",
-          "filter_genre",
-          "filter_region",
-          "only_favorite",
-          "sort_order",
-      ]:
-        if key in st.session_state:
-          del st.session_state[key]
-      st.rerun()
+      　st.session_state["search_keyword"] = ""
+        st.session_state["filter_type"] = "すべて"
+        st.session_state["filter_genre"] = "すべて"
+        st.session_state["filter_region"] = "すべて"
+        st.session_state["only_favorite"] = False
+        st.rerun()
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
