@@ -763,6 +763,6 @@ with tab3:
     st.markdown("---")
     st.subheader("生成されたプロンプト")
     st.write(
-        "右上の **右上のコピーボタン📋で、ワンクリックコピー！そのままお好みのAIに貼り付けてご利用ください。"
+        "右上のコピーボタン📋で、ワンクリックコピー！そのままお好みのAIに貼り付けてご利用ください。"
     )
     st.code(generated_prompt, language="markdown")
