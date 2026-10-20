@@ -654,7 +654,7 @@ with tab2:
                     tickangle=0,
                 )
             )
-              
+            
             st.plotly_chart(fig, use_container_width=True)
         else:
           df_temp["期間"] = df_temp["dt"].dt.year.astype(str)
