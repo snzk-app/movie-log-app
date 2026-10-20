@@ -628,6 +628,8 @@ with tab2:
             fig.update_xaxes(type="category")
             
             st.plotly_chart(fig, use_container_width=True)
+
+            fig.update_xaxes(type="category", tickangle=-45)
         else:
           df_temp["期間"] = df_temp["dt"].dt.year.astype(str)
           counts = df_temp["期間"].value_counts().sort_index().reset_index()
