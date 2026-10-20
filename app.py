@@ -681,7 +681,6 @@ with tab3:
 
     st.markdown("##### 🎬 参考にする作品")
     selection_mode = st.radio(
-        "参考にする作品を選んでください",
         [
             "① テーブルから自分でチェックボックスで選択",
             "② 評価5〜4の作品からランダムで3作品を自動選択",
@@ -724,7 +723,7 @@ with tab3:
       )
       target_pool = df[df["評価"].isin([4, 5])] if "評価" in df.columns else df
 
-      if st.button("3作品をランダム選出", key=f"random_btn_{rc}"):
+      if st.button("🎲", key=f"random_btn_{rc}"):
         sampled = (
             target_pool.sample(n=3)
             if len(target_pool) >= 3
