@@ -461,7 +461,7 @@ with tab1:
             )
             st.rerun()
 
-    # CSVダウンロード ＆ 全データリセットセクション
+    # CSVダウンロードセクション
     st.markdown("<br>", unsafe_allow_html=True)
     if "show_download_confirm" not in st.session_state:
       st.session_state.show_download_confirm = False
@@ -484,43 +484,7 @@ with tab1:
         if st.button("キャンセル", key="cancel_dl"):
           st.session_state.show_download_confirm = False
           st.rerun()
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    if "reset_step" not in st.session_state:
-      st.session_state.reset_step = 0
-
-    if st.session_state.reset_step == 0:
-      if st.button("❌ 全データをリセット（初期化）"):
-        st.session_state.reset_step = 1
-        st.rerun()
-    elif st.session_state.reset_step == 1:
-      st.warning("⚠️ 本当にすべてのデータをリセットしますか？")
-      col_rs1, col_rs2 = st.columns(2)
-      with col_rs1:
-        if st.button("はい、リセットする"):
-          st.session_state.reset_step = 2
-          st.rerun()
-      with col_rs2:
-        if st.button("キャンセル", key="cancel_rs_1"):
-          st.session_state.reset_step = 0
-          st.rerun()
-    elif st.session_state.reset_step == 2:
-      st.error(
-          "⚠️【最終確認】この操作を行うと、これまでの記録データがすべて完全に消去され、元に戻せません。本当に実行しますか？"
-      )
-      col_rs3, col_rs4 = st.columns(2)
-      with col_rs3:
-        if st.button("はい、本当にすべてのデータを削除する", type="primary"):
-          if os.path.exists(CSV_FILE):
-            os.remove(CSV_FILE)
-          st.session_state.reset_step = 0
-          st.success("全データをリセットしました。")
-          st.rerun()
-      with col_rs4:
-        if st.button("キャンセル", key="cancel_rs_2"):
-          st.session_state.reset_step = 0
-          st.rerun()
-
+ 
 # ------------------------------------------
 # タブ2: 視聴データの分析レポート
 # ------------------------------------------
