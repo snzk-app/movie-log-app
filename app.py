@@ -525,128 +525,136 @@ with tab1:
 # タブ2: 視聴データの分析レポート
 # ------------------------------------------
 with tab2:
-  st.subheader("視聴データの分析レポート")
-  if df.empty:
-    st.info("データがありません。作品を記録するとグラフが表示されます。")
-  else:
-    col1, col2 = st.columns(2)
+    st.subheader("視聴データの分析レポート")
+    if df.empty:
+        st.info("データがありません。作品を記録するとグラフが表示されます。")
+    else:
+        # 左右に2カラムを配置
+        col1, col2 = st.columns(2)
 
-    with col1:
-      st.markdown("##### 💿 項目別の割合")
-      chart_target = st.radio(
-          "表示項目",
-          ["ジャンル別", "国・地域別", "評価別"],
-          horizontal=True,
-          key="pie_target",
-      )
-
-      if chart_target == "ジャンル別":
-        counts = df["ジャンル"].value_counts().reset_index()
-      elif chart_target == "国・地域別":
-        counts = df["国・地域"].value_counts().reset_index()
-      else:
-        counts = (
-            df["評価"]
-            .astype(int)
-            .value_counts()
-            .reindex([1, 2, 3, 4, 5], fill_value=0)
-            .reset_index()
-        )
-        counts["評価"] = counts["評価"].astype(str) + "評価"
-
-      counts.columns = ["項目", "count"]
-
-      if chart_target == "評価別":
-        fig_pie = px.pie(
-            counts,
-            names="項目",
-            values="count",
-            hole=0.4,
-            category_orders={"項目": ["1評価", "2評価", "3評価", "4評価", "5評価"]}
-        )
-        fig_pie.update_traces(
-            direction="clockwise",
-            sort=False,
-            hovertemplate="項目: %{label}<br>件数: %{value}<br>割合: %{percent}<extra></extra>",
-        )
-      else:
-        fig_pie = px.pie(counts, names="項目", values="count", hole=0.4)
-        fig_pie.update_traces(direction="clockwise", sort=True)
-
-      st.plotly_chart(fig_pie, use_container_width=True)
-      st.markdown("##### 📈 視聴数の推移")
-      if "視聴日" in df.columns:
-        df_temp = df.copy()
-        df_temp["dt"] = pd.to_datetime(df_temp["視聴日"], errors="coerce")
-
-        time_unit = st.radio(
-            "表示単位", ["月別", "年別"], horizontal=True, key="time_unit_radio"
-        )
-        if time_unit == "月別":
-          df_temp["年"] = df_temp["dt"].dt.year.astype(str)
-          available_years = sorted(df_temp["年"].unique())
-          selected_year = st.selectbox(
-              "表示する年を選択", ["全期間"] + available_years, key="selected_year_sb"
-          )
-
-          df_temp["年月"] = df_temp["dt"].dt.strftime("%Y%m")
-
-          if selected_year == "全期間":
-            min_date, max_date = df_temp["dt"].min(), df_temp["dt"].max()
-            if pd.isnull(min_date) or pd.isnull(max_date):
-              st.info("データがありません")
-              st.stop()
-
-            all_months = (
-                pd.date_range(start=min_date, end=max_date, freq="MS")
-                .strftime("%Y%m")
-                .tolist()
+        # ------------------------------------------
+        # 左側 (col1): 項目別の割合（円グラフ）
+        # ------------------------------------------
+        with col1:
+            st.markdown("##### 💿 項目別の割合")
+            chart_target = st.radio(
+                "表示項目",
+                ["ジャンル別", "国・地域別", "評価別"],
+                horizontal=True,
+                key="pie_target",
             )
-            # 全期間：1月のみ年を表示、他は空欄
-            label_func = lambda x: x[:4] if x.endswith("01") else ""
-            target_df = df_temp
-          else:
-            all_months = [f"{selected_year}{m:02d}" for m in range(1, 13)]
-            # 年別：月のみ表示
-            label_func = lambda x: x[4:]
-            target_df = df_temp[df_temp["年"] == selected_year]
 
-          counts = (
-              target_df["年月"]
-              .value_counts()
-              .reindex(all_months, fill_value=0)
-              .reset_index()
-          )
-          counts.columns = ["期間", "視聴数"]
-          counts["hover_period"] = counts["期間"]
-          counts["表示ラベル"] = counts["期間"].apply(label_func)
+            if chart_target == "ジャンル別":
+                counts = df["ジャンル"].value_counts().reset_index()
+            elif chart_target == "国・地域別":
+                counts = df["国・地域"].value_counts().reset_index()
+            else:
+                counts = (
+                    df["評価"]
+                    .astype(int)
+                    .value_counts()
+                    .reindex([1, 2, 3, 4, 5], fill_value=0)
+                    .reset_index()
+                )
+                counts["評価"] = counts["評価"].astype(str) + "評価"
 
-          fig = px.bar(
-              counts,
-              x="期間",
-              y="視聴数",
-              range_y=[0, 30],
-              category_orders={"期間": all_months},
-              custom_data=["hover_period"],
-          )
-          fig.update_traces(
-              hovertemplate="期間: %{customdata[0]}<br>視聴数: %{y}<extra></extra>"
-          )
-          fig.update_layout(
-              xaxis=dict(
-                  type="category",
-                  tickmode="array",
-                  tickvals=counts["期間"],
-                  ticktext=counts["表示ラベル"],
-                  tickangle=0,
-              )
-          )
-          st.plotly_chart(fig, use_container_width=True)
-        else:
-          df_temp["期間"] = df_temp["dt"].dt.year.astype(str)
-          counts = df_temp["期間"].value_counts().sort_index().reset_index()
-          counts.columns = ["期間", "視聴数"]
-          st.bar_chart(counts.set_index("期間"))
+            counts.columns = ["項目", "count"]
+
+            if chart_target == "評価別":
+                fig_pie = px.pie(
+                    counts,
+                    names="項目",
+                    values="count",
+                    hole=0.4,
+                    category_orders={"項目": ["1評価", "2評価", "3評価", "4評価", "5評価"]},
+                )
+                fig_pie.update_traces(
+                    direction="clockwise",
+                    sort=False,
+                    hovertemplate="項目: %{label}<br>件数: %{value}<br>割合: %{percent}<extra></extra>",
+                )
+            else:
+                fig_pie = px.pie(counts, names="項目", values="count", hole=0.4)
+                fig_pie.update_traces(direction="clockwise", sort=True)
+
+            st.plotly_chart(fig_pie, use_container_width=True)
+
+        # ------------------------------------------
+        # 右側 (col2): 視聴数の推移
+        # ------------------------------------------
+        with col2:
+            st.markdown("##### 📈 視聴数の推移")
+            if "視聴日" in df.columns:
+                df_temp = df.copy()
+                df_temp["dt"] = pd.to_datetime(df_temp["視聴日"], errors="coerce")
+
+                time_unit = st.radio(
+                    "表示単位", ["月別", "年別"], horizontal=True, key="time_unit_radio"
+                )
+
+                if time_unit == "月別":
+                    df_temp["年"] = df_temp["dt"].dt.year.astype(str)
+                    available_years = sorted(df_temp["年"].unique())
+                    selected_year = st.selectbox(
+                        "表示する年を選択", ["全期間"] + available_years, key="selected_year_sb"
+                    )
+
+                    df_temp["年月"] = df_temp["dt"].dt.strftime("%Y%m")
+
+                    if selected_year == "全期間":
+                        min_date, max_date = df_temp["dt"].min(), df_temp["dt"].max()
+                        if pd.isnull(min_date) or pd.isnull(max_date):
+                            st.info("データがありません")
+                            st.stop()
+
+                        all_months = (
+                            pd.date_range(start=min_date, end=max_date, freq="MS")
+                            .strftime("%Y%m")
+                            .tolist()
+                        )
+                        label_func = lambda x: x[:4] if x.endswith("01") else ""
+                        target_df = df_temp
+                    else:
+                        all_months = [f"{selected_year}{m:02d}" for m in range(1, 13)]
+                        label_func = lambda x: x[4:]
+                        target_df = df_temp[df_temp["年"] == selected_year]
+
+                    counts = (
+                        target_df["年月"]
+                        .value_counts()
+                        .reindex(all_months, fill_value=0)
+                        .reset_index()
+                    )
+                    counts.columns = ["期間", "視聴数"]
+                    counts["hover_period"] = counts["期間"]
+                    counts["表示ラベル"] = counts["期間"].apply(label_func)
+
+                    fig = px.bar(
+                        counts,
+                        x="期間",
+                        y="視聴数",
+                        range_y=[0, 30],
+                        category_orders={"期間": all_months},
+                        custom_data=["hover_period"],
+                    )
+                    fig.update_traces(
+                        hovertemplate="期間: %{customdata[0]}<br>視聴数: %{y}<extra></extra>"
+                    )
+                    fig.update_layout(
+                        xaxis=dict(
+                            type="category",
+                            tickmode="array",
+                            tickvals=counts["期間"],
+                            ticktext=counts["表示ラベル"],
+                            tickangle=0,
+                        )
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    df_temp["期間"] = df_temp["dt"].dt.year.astype(str)
+                    counts = df_temp["期間"].value_counts().sort_index().reset_index()
+                    counts.columns = ["期間", "視聴数"]
+                    st.bar_chart(counts.set_index("期間"))
 
 # ------------------------------------------
 # タブ3: AIおすすめレコメンド
