@@ -599,11 +599,11 @@ with tab2:
                   x="期間",
                   y="視聴数",
                   range_y=[0, 30],
-                  category_orders={"期間": all_months},
-                  # ★ホバー時に「期間: YYYYMM」「視聴数: ○」と正確に出るように指定
-                  hovertemplate="期間: %{x}<br>視聴数: %{y}<extra></extra>"
+                  category_orders={"期間": all_months}
               )
               
+              # ★ここでホバーの設定と軸の設定をまとめて適用する
+              fig.update_traces(hovertemplate="期間: %{x}<br>視聴数: %{y}<extra></extra>")
               fig.update_layout(
                   xaxis=dict(
                       type="category",
@@ -640,11 +640,11 @@ with tab2:
                 x="期間",
                 y="視聴数",
                 range_y=[0, 30],
-                category_orders={"期間": all_months},
-                # ★こちら側のホバー設定
-                hovertemplate="期間: %{x}<br>視聴数: %{y}<extra></extra>"
+                category_orders={"期間": all_months}
             )
             
+            # ★こちらも同様に update_traces でホバーを設定
+            fig.update_traces(hovertemplate="期間: %{x}<br>視聴数: %{y}<extra></extra>")
             fig.update_layout(
                 xaxis=dict(
                     type="category",
