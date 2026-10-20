@@ -570,106 +570,59 @@ with tab2:
               "表示する年を選択", ["全期間"] + available_years, key="selected_year_sb"
           )
 
-          if selected_year == "全期間":
-            df_temp["年月"] = df_temp["dt"].dt.strftime("%Y%m")
-            min_date, max_date = df_temp["dt"].min(), df_temp["dt"].max()
+          df_temp["年月"] = df_temp["dt"].dt.strftime("%Y%m")
 
-            if pd.notnull(min_date) and pd.notnull(max_date):
-              all_months = pd.date_range(
-                  start=min_date,
-                  end=max_date,
-                  freq="MS",
-              ).strftime("%Y%m").tolist()
-              
-              counts = (
-                  df_temp["年月"]
-                  .value_counts()
-                  .reindex(all_months, fill_value=0)
-                  .reset_index()
-              )
-              counts.columns = ["期間", "視聴数"]
-              
-              # ★ホバー用に元のYYYYMMを保持しておく列を作る
-              counts["hover_period"] = counts["期間"]
-              
-              # 軸用の表示ラベル（1月だけ年号、ほかは空欄）
-              counts["表示ラベル"] = counts["期間"].apply(
-                  lambda x: x[:4] if x.endswith("01") else ""
-              )
-              
-              # customdataに hover_period を渡す
-              fig = px.bar(
-                  counts,
-                  x="期間",
-                  y="視聴数",
-                  range_y=[0, 30],
-                  category_orders={"期間": all_months},
-                  custom_data=["hover_period"]
-              )
-              
-              # %{customdata[0]} を使って、確実に元のYYYYMMを吹き出しに表示させる
-              fig.update_traces(
-                  hovertemplate="期間: %{customdata[0]}<br>視聴数: %{y}<extra></extra>"
-              )
-              
-              fig.update_layout(
-                  xaxis=dict(
-                      type="category",
-                      tickmode="array",
-                      tickvals=counts["期間"],
-                      ticktext=counts["表示ラベル"],
-                      tickangle=0,
-                  )
-              )
-              
-              st.plotly_chart(fig, use_container_width=True)
-            else:
+          if selected_year == "全期間":
+            min_date, max_date = df_temp["dt"].min(), df_temp["dt"].max()
+            if pd.isnull(min_date) or pd.isnull(max_date):
               st.info("データがありません")
+              st.stop()
+
+            all_months = (
+                pd.date_range(start=min_date, end=max_date, freq="MS")
+                .strftime("%Y%m")
+                .tolist()
+            )
+            # 全期間：1月のみ年を表示、他は空欄
+            label_func = lambda x: x[:4] if x.endswith("01") else ""
+            target_df = df_temp
           else:
-            df_filtered_year = df_temp[df_temp["年"] == selected_year]
             all_months = [f"{selected_year}{m:02d}" for m in range(1, 13)]
-            
-            df_filtered_year["年月"] = (
-                df_filtered_year["dt"].dt.strftime("%Y%m")
-            )
-            counts = (
-                df_filtered_year["年月"]
-                .value_counts()
-                .reindex(all_months, fill_value=0)
-                .reset_index()
-            )
-            counts.columns = ["期間", "視聴数"]
-            
-            # ★こちらも同様にホバー用の列を作る
-            counts["hover_period"] = counts["期間"]
-            
-            # 軸用の表示ラベル（月だけ表示）
-            counts["表示ラベル"] = counts["期間"].apply(lambda x: x[4:] + "月")
-            
-            fig = px.bar(
-                counts,
-                x="期間",
-                y="視聴数",
-                range_y=[0, 30],
-                category_orders={"期間": all_months},
-                custom_data=["hover_period"]
-            )
-            
-            fig.update_traces(
-                hovertemplate="期間: %{customdata[0]}<br>視聴数: %{y}<extra></extra>"
-            )
-            
-            fig.update_layout(
-                xaxis=dict(
-                    type="category",
-                    tickmode="array",
-                    tickvals=counts["期間"],
-                    ticktext=counts["表示ラベル"],
-                    tickangle=0,
-                )
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
+            # 年別：月のみ表示
+            label_func = lambda x: x[4:] + "月"
+            target_df = df_temp[df_temp["年"] == selected_year]
+
+          counts = (
+              target_df["年月"]
+              .value_counts()
+              .reindex(all_months, fill_value=0)
+              .reset_index()
+          )
+          counts.columns = ["期間", "視聴数"]
+          counts["hover_period"] = counts["期間"]
+          counts["表示ラベル"] = counts["期間"].apply(label_func)
+
+          fig = px.bar(
+              counts,
+              x="期間",
+              y="視聴数",
+              range_y=[0, 30],
+              category_orders={"期間": all_months},
+              custom_data=["hover_period"],
+          )
+          fig.update_traces(
+              hovertemplate="期間: %{customdata[0]}<br>視聴数: %{y}<extra></extra>"
+          )
+          fig.update_layout(
+              xaxis=dict(
+                  type="category",
+                  tickmode="array",
+                  tickvals=counts["期間"],
+                  ticktext=counts["表示ラベル"],
+                  tickangle=0,
+              )
+          )
+          st.plotly_chart(fig, use_container_width=True)
         else:
           df_temp["期間"] = df_temp["dt"].dt.year.astype(str)
           counts = df_temp["期間"].value_counts().sort_index().reset_index()
