@@ -572,13 +572,13 @@ with tab2:
           )
 
           if selected_year == "全期間":
-            df_temp["年月"] = df_temp["dt"].dt.strftime("%Y-%m")
+            df_temp["年月"] = df_temp["dt"].dt.strftime("%Y%m")
             min_date, max_date = df_temp["dt"].min(), df_temp["dt"].max()
 
             if pd.notnull(min_date) and pd.notnull(max_date):
               all_months = pd.period_range(
-                  start=min_date.strftime("%Y-%m"),
-                  end=max_date.strftime("%Y-%m"),
+                  start=min_date.strftime("%Y%m"),
+                  end=max_date.strftime("%Y%m"),
                   freq="M",
               ).astype(str)
               counts = (
@@ -598,7 +598,7 @@ with tab2:
             df_filtered_year = df_temp[df_temp["年"] == selected_year]
             all_months = [f"{selected_year}-{m:02d}" for m in range(1, 13)]
             df_filtered_year["年月"] = (
-                df_filtered_year["dt"].dt.strftime("%Y-%m")
+                df_filtered_year["dt"].dt.strftime("%Y%m")
             )
             counts = (
                 df_filtered_year["年月"]
