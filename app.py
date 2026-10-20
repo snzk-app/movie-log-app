@@ -589,21 +589,29 @@ with tab2:
               )
               counts.columns = ["期間", "視聴数"]
               
+              # ★ホバー用に元のYYYYMMを保持しておく列を作る
+              counts["hover_period"] = counts["期間"]
+              
               # 軸用の表示ラベル（1月だけ年号、ほかは空欄）
               counts["表示ラベル"] = counts["期間"].apply(
                   lambda x: x[:4] if x.endswith("01") else ""
               )
               
+              # customdataに hover_period を渡す
               fig = px.bar(
                   counts,
                   x="期間",
                   y="視聴数",
                   range_y=[0, 30],
-                  category_orders={"期間": all_months}
+                  category_orders={"期間": all_months},
+                  custom_data=["hover_period"]
               )
               
-              # ★ここでホバーの設定と軸の設定をまとめて適用する
-              fig.update_traces(hovertemplate="期間: %{x}<br>視聴数: %{y}<extra></extra>")
+              # %{customdata[0]} を使って、確実に元のYYYYMMを吹き出しに表示させる
+              fig.update_traces(
+                  hovertemplate="期間: %{customdata[0]}<br>視聴数: %{y}<extra></extra>"
+              )
+              
               fig.update_layout(
                   xaxis=dict(
                       type="category",
@@ -632,6 +640,9 @@ with tab2:
             )
             counts.columns = ["期間", "視聴数"]
             
+            # ★こちらも同様にホバー用の列を作る
+            counts["hover_period"] = counts["期間"]
+            
             # 軸用の表示ラベル（月だけ表示）
             counts["表示ラベル"] = counts["期間"].apply(lambda x: x[4:] + "月")
             
@@ -640,11 +651,14 @@ with tab2:
                 x="期間",
                 y="視聴数",
                 range_y=[0, 30],
-                category_orders={"期間": all_months}
+                category_orders={"期間": all_months},
+                custom_data=["hover_period"]
             )
             
-            # ★こちらも同様に update_traces でホバーを設定
-            fig.update_traces(hovertemplate="期間: %{x}<br>視聴数: %{y}<extra></extra>")
+            fig.update_traces(
+                hovertemplate="期間: %{customdata[0]}<br>視聴数: %{y}<extra></extra>"
+            )
+            
             fig.update_layout(
                 xaxis=dict(
                     type="category",
