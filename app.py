@@ -506,7 +506,7 @@ with tab1:
           st.rerun()
     elif st.session_state.reset_step == 2:
       st.error(
-          "⚠️⚠️【最終確認】この操作を行うと、これまでの記録データがすべて完全に消去され、元に戻せません。本当に実行しますか？"
+          "⚠️【最終確認】この操作を行うと、これまでの記録データがすべて完全に消去され、元に戻せません。本当に実行しますか？"
       )
       col_rs3, col_rs4 = st.columns(2)
       with col_rs3:
@@ -679,6 +679,7 @@ with tab3:
         f"rec_mood_{rc}",
     )
 
+    st.markdown("##### 🎬 参考にする作品")
     selection_mode = st.radio(
         "参考にする作品を選んでください",
         [
