@@ -597,7 +597,12 @@ with tab2:
                   range_y=[0, 30],
                   category_orders={"期間": all_months}
               )
-              fig.update_xaxes(type="category", tickangle=90)
+              fig.update_layout(
+                  xaxis=dict(
+                      type="category",
+                      tickangle=-90,  # 下から上に読ませたい場合は -90 または 90
+                  )
+              )
               
               st.plotly_chart(fig, use_container_width=True)
             else:
@@ -625,7 +630,12 @@ with tab2:
                 range_y=[0, 30],
                 category_orders={"期間": all_months}
             )
-            fig.update_xaxes(type="category", tickangle=90)
+            fig.update_layout(
+                  xaxis=dict(
+                      type="category",
+                      tickangle=-90,  # 下から上に読ませたい場合は -90 または 90
+                  )
+              )
               
             st.plotly_chart(fig, use_container_width=True)
         else:
