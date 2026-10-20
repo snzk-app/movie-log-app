@@ -278,7 +278,7 @@ with tab1:
   st.subheader("記録データ一覧 ＆ 管理")
 
   # 新しい作品を記録するフォーム
-  with st.expander("新しい作品を記録する", expanded=False):
+  with st.expander("新しい作品を記録", expanded=False):
     if st.session_state.form_success_message:
       st.success(st.session_state.form_success_message)
       st.session_state.form_success_message = ""
@@ -351,7 +351,7 @@ with tab1:
     )
 
     # データの編集・削除管理セクション
-    with st.expander("データの編集・削除を行う"):
+    with st.expander("データの編集・削除"):
       edit_tab, delete_tab = st.tabs(
           ["📝 データを編集する", "🗑️ データを削除する"]
       )
