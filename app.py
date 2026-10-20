@@ -126,7 +126,7 @@ def filter_and_sort_data(df):
   """検索フィルターと並び替え条件を適用してデータフレームを返す"""
   filtered_df = df.copy()
 
-  with st.expander("🔍 検索・並び替えフィルターを開く", expanded=False):
+  with st.expander("検索・並び替えフィルターを開く", expanded=False):
     if st.button("🔄 検索条件をリセット"):
       for key in [
           "search_keyword",
@@ -266,9 +266,9 @@ render_summary_metrics(df)
 
 # タブの作成
 tab1, tab2, tab3 = st.tabs([
-    "📂 記録データ",
-    "📊 分析レポート",
-    "🧙‍♂️ AIおすすめ",
+    "記録データ",
+    "分析レポート",
+    "AIおすすめ",
 ])
 
 # ------------------------------------------
@@ -278,7 +278,7 @@ with tab1:
   st.subheader("記録データ一覧 ＆ 管理")
 
   # 新しい作品を記録するフォーム
-  with st.expander("✏️ 新しい作品を記録する", expanded=False):
+  with st.expander("新しい作品を記録する", expanded=False):
     if st.session_state.form_success_message:
       st.success(st.session_state.form_success_message)
       st.session_state.form_success_message = ""
@@ -351,7 +351,7 @@ with tab1:
     )
 
     # データの編集・削除管理セクション
-    with st.expander("🛠️ データの編集・削除を行う"):
+    with st.expander("データの編集・削除を行う"):
       edit_tab, delete_tab = st.tabs(
           ["📝 データを編集する", "🗑️ データを削除する"]
       )
@@ -506,7 +506,7 @@ with tab1:
           st.rerun()
     elif st.session_state.reset_step == 2:
       st.error(
-          "🚨【最終確認】この操作を行うと、これまでの記録データがすべて完全に消去され、元に戻せません。本当に実行しますか？"
+          "⚠️【最終確認】この操作を行うと、これまでの記録データがすべて完全に消去され、元に戻せません。本当に実行しますか？"
       )
       col_rs3, col_rs4 = st.columns(2)
       with col_rs3:
@@ -666,7 +666,7 @@ with tab3:
     if "recommend_reset_count" not in st.session_state:
       st.session_state.recommend_reset_count = 0
 
-    if st.button("🔄 入力条件をリセットする"):
+    if st.button("🔄 入力条件をリセット"):
       st.session_state.recommend_reset_count += 1
       if "random_sampled" in st.session_state:
         del st.session_state["random_sampled"]
@@ -723,7 +723,7 @@ with tab3:
       )
       target_pool = df[df["評価"].isin([4, 5])] if "評価" in df.columns else df
 
-      if st.button("🎲 3作品をランダム選出する", key=f"random_btn_{rc}"):
+      if st.button("3作品をランダム選出", key=f"random_btn_{rc}"):
         sampled = (
             target_pool.sample(n=3)
             if len(target_pool) >= 3
