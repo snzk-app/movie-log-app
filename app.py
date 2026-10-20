@@ -542,23 +542,36 @@ with tab2:
 
       if chart_target == "ジャンル別":
         counts = df["ジャンル"].value_counts().reset_index()
-        counts.columns = ["項目", "count"]
       elif chart_target == "国・地域別":
         counts = df["国・地域"].value_counts().reset_index()
-        counts.columns = ["項目", "count"]
       else:
-        counts = df["評価"].astype(str).value_counts().reset_index()
-        counts.columns = ["項目", "count"]
-        counts["項目"] = counts["項目"] + "評価"
+        counts = (
+            df["評価"]
+            .astype(int)
+            .value_counts()
+            .reindex([1, 2, 3, 4, 5], fill_value=0)
+            .reset_index()
+        )
+        counts["評価"] = counts["評価"].astype(str) + "評価"
+
+      counts.columns = ["項目", "count"]
 
       fig_pie = px.pie(counts, names="項目", values="count", hole=0.4)
 
-      # ★ ジャンル別と国・地域別の時だけ、割合の多い順に時計回りで並べる
-      if chart_target in ["ジャンル別", "国・地域別"]:
+      if chart_target == "評価別":
+        fig_pie.update_traces(
+            direction="clockwise",
+            sort=False,
+            hovertemplate="項目: %{label}<br>件数: %{value}<br>割合: %{percent}<extra></extra>",
+        )
+        fig_pie.update_layout(
+            categoryorder="array",
+            categoryarray=["1評価", "2評価", "3評価", "4評価", "5評価"],
+        )
+      else:
         fig_pie.update_traces(direction="clockwise", sort=True)
 
       st.plotly_chart(fig_pie, use_container_width=True)
-
     with col2:
       st.markdown("##### 📈 視聴数の推移")
       if "視聴日" in df.columns:
