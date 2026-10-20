@@ -126,7 +126,7 @@ def filter_and_sort_data(df):
   """検索フィルターと並び替え条件を適用してデータフレームを返す"""
   filtered_df = df.copy()
 
-  with st.expander("検索・並び替えフィルターを開く", expanded=False):
+  with st.expander("検索・並び替えフィルター", expanded=False):
     if st.button("🔄 検索条件をリセット"):
       for key in [
           "search_keyword",
@@ -278,7 +278,7 @@ with tab1:
   st.subheader("記録データ一覧 ＆ 管理")
 
   # 新しい作品を記録するフォーム
-  with st.expander("新しい作品を記録", expanded=False):
+  with st.expander("新しい作品を記録する", expanded=False):
     if st.session_state.form_success_message:
       st.success(st.session_state.form_success_message)
       st.session_state.form_success_message = ""
@@ -506,7 +506,7 @@ with tab1:
           st.rerun()
     elif st.session_state.reset_step == 2:
       st.error(
-          "⚠️【最終確認】この操作を行うと、これまでの記録データがすべて完全に消去され、元に戻せません。本当に実行しますか？"
+          "⚠️⚠️【最終確認】この操作を行うと、これまでの記録データがすべて完全に消去され、元に戻せません。本当に実行しますか？"
       )
       col_rs3, col_rs4 = st.columns(2)
       with col_rs3:
@@ -533,7 +533,7 @@ with tab2:
 
         # 項目別の割合（円グラフ）
         with col1:
-            st.markdown("##### 💿 項目別の割合")
+            st.markdown("##### 項目別の割合")
             chart_target = st.radio(
                 "表示項目",
                 ["ジャンル別", "国・地域別", "評価別"],
@@ -578,7 +578,7 @@ with tab2:
 
         # 視聴数の推移
         with col2:
-            st.markdown("##### 📈 視聴数の推移")
+            st.markdown("##### 視聴数の推移")
             if "視聴日" in df.columns:
                 df_temp = df.copy()
                 df_temp["dt"] = pd.to_datetime(df_temp["視聴日"], errors="coerce")
