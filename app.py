@@ -638,7 +638,7 @@ with tab3:
         f"rec_mood_{rc}",
     )
 
-    st.markdown("##### 🎞️ 参考にする作品")
+    st.markdown("##### 1. 参考にする作品")
     selection_mode = st.radio(
         "選択方法を選んでください",
         [
@@ -699,7 +699,7 @@ with tab3:
             "上のボタンを押すと、評価5〜4の作品からランダムに3作品が選ばれます。"
         )
 
-    st.markdown("##### 📺 利用中の動画配信サービス")
+    st.markdown("##### 2. 利用中の動画配信サービス")
     selected_services = st.multiselect(
         "現在利用しているサービスを選択してください",
         ["Netflix", "Amazon Prime Video", "Disney+", "U-NEXT"],
@@ -707,7 +707,7 @@ with tab3:
         key="rec_services",
     )
 
-    st.markdown("##### 🍃 いまの気分や要望（自由入力）")
+    st.markdown("##### 3. いまの気分や要望（自由入力）")
     mood_input = st.text_area(
         "例：「ハッピーエンドで爽快感のある作品がいい」「120分以内の映画」など",
         placeholder="ここに今の気分を入力してください（未入力でもOK）...",
