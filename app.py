@@ -589,7 +589,7 @@ with tab2:
           else:
             all_months = [f"{selected_year}{m:02d}" for m in range(1, 13)]
             # 年別：月のみ表示
-            label_func = lambda x: x[4:] + "月"
+            label_func = lambda x: x[4:]
             target_df = df_temp[df_temp["年"] == selected_year]
 
           counts = (
