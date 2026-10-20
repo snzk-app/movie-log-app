@@ -551,13 +551,11 @@ with tab2:
         counts.columns = ["項目", "count"]
         counts["項目"] = counts["項目"] + "評価"
 
-      # ★1. 割合が大きい順（降順）に並べ替え
-      counts = counts.sort_values(by="count", ascending=False).reset_index(drop=True)
-
       fig_pie = px.pie(counts, names="項目", values="count", hole=0.4)
-      
-      # ★2. 描画方向を時計回りに設定（デフォルトは反時計回り）
-      fig_pie.update_traces(direction="clockwise")
+
+      # ★ ジャンル別と国・地域別の時だけ、割合の多い順に時計回りで並べる
+      if chart_target in ["ジャンル別", "国・地域別"]:
+        fig_pie.update_traces(direction="clockwise", sort=True)
 
       st.plotly_chart(fig_pie, use_container_width=True)
 
