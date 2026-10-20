@@ -597,7 +597,7 @@ with tab2:
                   range_y=[0, 30],
                   category_orders={"期間": all_months}
               )
-              fig.update_xaxes(type="category")
+              fig.update_xaxes(type="category", tickangle=90)
               
               st.plotly_chart(fig, use_container_width=True)
             else:
@@ -625,11 +625,9 @@ with tab2:
                 range_y=[0, 30],
                 category_orders={"期間": all_months}
             )
-            fig.update_xaxes(type="category")
-            
+            fig.update_xaxes(type="category", tickangle=90)
+              
             st.plotly_chart(fig, use_container_width=True)
-
-            fig.update_xaxes(type="category", tickangle=-45)
         else:
           df_temp["期間"] = df_temp["dt"].dt.year.astype(str)
           counts = df_temp["期間"].value_counts().sort_index().reset_index()
