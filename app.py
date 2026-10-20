@@ -691,7 +691,7 @@ with tab3:
 
     selected_titles_for_prompt = []
 
-    if selection_mode == "① テーブルから自分でチェックボックスで選択":
+    if selection_mode == "① テーブルからチェックボックスで選択":
       st.write(
           "下のテーブルの「選択」列にチェックを入れてください。"
       )
@@ -763,6 +763,6 @@ with tab3:
     st.markdown("---")
     st.subheader("生成されたプロンプト")
     st.write(
-        "右上のコピーボタン📋で、ワンクリックコピー！そのままお好みのAIに貼り付けてご利用ください。"
+        "右上のコピーボタン📋で、ワンクリックコピー！そのままお好みのAIに貼り付けてください。"
     )
     st.code(generated_prompt, language="markdown")
