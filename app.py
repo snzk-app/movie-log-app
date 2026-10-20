@@ -577,8 +577,8 @@ with tab2:
 
             if pd.notnull(min_date) and pd.notnull(max_date):
               all_months = pd.period_range(
-                  start=min_date.strftime("%Y%m"),
-                  end=max_date.strftime("%Y%m"),
+                  start=min_date.strftime("%Y-%m"),
+                  end=max_date.strftime("%Y-%m"),
                   freq="M",
               ).astype(str)
               counts = (
