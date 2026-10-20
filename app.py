@@ -589,7 +589,11 @@ with tab2:
               )
               counts.columns = ["期間", "視聴数"]
               
-              # ★文字列（カテゴリ）として扱う設定を追加
+              # ★全期間用：末尾が "01"（1月）のときは "YYYY" に、それ以外は空文字にする
+              counts["表示ラベル"] = counts["期間"].apply(
+                  lambda x: x[:4] if x.endswith("01") else ""
+              )
+              
               fig = px.bar(
                   counts,
                   x="期間",
@@ -597,10 +601,15 @@ with tab2:
                   range_y=[0, 30],
                   category_orders={"期間": all_months}
               )
+              
+              # ★x軸の表示を「表示ラベル」に変更し、ticktextで置き換える
               fig.update_layout(
                   xaxis=dict(
                       type="category",
-                      tickangle=-90,  # 下から上に読ませたい場合は -90 または 90
+                      tickmode="array",
+                      tickvals=counts["期間"],
+                      ticktext=counts["表示ラベル"],
+                      tickangle=0,  # 年号なので横書き（またはお好みで）に戻してもスッキリします
                   )
               )
               
@@ -622,7 +631,9 @@ with tab2:
             )
             counts.columns = ["期間", "視聴数"]
             
-            # ★文字列（カテゴリ）として扱う設定を追加
+            # ★年ごと用：「YYYYMM」の後半2文字（月だけ：01, 02...）にする
+            counts["表示ラベル"] = counts["期間"].apply(lambda x: x[4:] + "月") # または x[4:]
+            
             fig = px.bar(
                 counts,
                 x="期間",
@@ -630,12 +641,17 @@ with tab2:
                 range_y=[0, 30],
                 category_orders={"期間": all_months}
             )
+            
+            # ★月（例: 01, 02...）だけを表示
             fig.update_layout(
-                  xaxis=dict(
-                      type="category",
-                      tickangle=-90,  # 下から上に読ませたい場合は -90 または 90
-                  )
-              )
+                xaxis=dict(
+                    type="category",
+                    tickmode="array",
+                    tickvals=counts["期間"],
+                    ticktext=counts["表示ラベル"],
+                    tickangle=0,
+                )
+            )
               
             st.plotly_chart(fig, use_container_width=True)
         else:
