@@ -128,7 +128,7 @@ def filter_and_sort_data(df):
 
   with st.expander("検索・並び替えフィルター", expanded=False):
     if st.button("🔄 検索条件をリセット"):
-      　st.session_state["search_keyword"] = ""
+        st.session_state["search_keyword"] = ""
         st.session_state["filter_type"] = "すべて"
         st.session_state["filter_genre"] = "すべて"
         st.session_state["filter_region"] = "すべて"
